@@ -5,7 +5,7 @@
 #include <exception>
 #include <stdexcept>
 
-namespace MatraxEngine
+namespace QuickMathCpp
 {
 	template<typename T, unsigned int size> class Vector
 	{
@@ -17,18 +17,20 @@ namespace MatraxEngine
 
 			Vector<T, size>()
 			{
-				for (int i = 0; i < size; i++)
-				{
-					this->m_data[i] = 0;
-				}
+				for (unsigned long i = 0; i < size; i++)
+					m_data[i] = 0;
+			}
+
+			Vector<T, size>(Vector<T, size>& copy)
+			{
+				for (unsigned long i = 0; i < size; i++)
+					m_data[i] = copy.m_data[i];
 			}
 
 			Vector<T, size>(const Vector<T, size> & copy)
 			{
-				for (int i = 0; i < size; i++)
-				{
-					this->m_data[i] = copy.m_data[i];
-				}
+				for (unsigned long i = 0; i < size; i++)
+					m_data[i] = copy.m_data[i];
 			}
 
 			Vector<T, size>(T x, T y)
@@ -36,8 +38,8 @@ namespace MatraxEngine
 				if (size < 2)
 					throw std::runtime_error("Can't instantiate with 2 parameters !");
 
-				this->m_data[0] = x;
-				this->m_data[1] = y;
+				m_data[0] = x;
+				m_data[1] = y;
 			}
 
 			Vector<T, size>(T x, T y, T z)
@@ -45,9 +47,9 @@ namespace MatraxEngine
 				if (size < 3)
 					throw std::runtime_error("Can't instantiate with 3 parameters !");
 
-				this->m_data[0] = x;
-				this->m_data[1] = y;
-				this->m_data[2] = z;
+				m_data[0] = x;
+				m_data[1] = y;
+				m_data[2] = z;
 			}
 
 			Vector<T, size>(T x, T y, T z, T w)
@@ -55,33 +57,38 @@ namespace MatraxEngine
 				if (size < 4)
 					throw std::runtime_error("Can't instantiate with 4 parameters !");
 
-				this->m_data[0] = x;
-				this->m_data[1] = y;
-				this->m_data[2] = z;
-				this->m_data[3] = w;
+				m_data[0] = x;
+				m_data[1] = y;
+				m_data[2] = z;
+				m_data[3] = w;
 			}
 
 			std::string ToString() const
 			{
 				std::string str("[ ");
-				for (int i = 0; i < size - 1; i++)
+
+				for (unsigned long i = 0; i < size - 1; i++)
 				{
-					str.append(std::to_string(this->m_data[i]));
+					std::string data = std::to_string(m_data[i]);
+					str.append(data);
 					str.append(",");
 				}
-				str.append(std::to_string(this->m_data[size - 1]));
+
+				std::string last_data = std::to_string(m_data[size - 1]);
+				str.append(last_data);
 				str.append(" ]");
+
 				return str;
 			}
 
-			T* GetPtr()
+			T * GetPtr()
 			{
-				return this->m_data;
+				return m_data;
 			}
 
 			T GetX() const
 			{
-				return this->m_data[0];
+				return m_data[0];
 			}
 
 			T GetY() const
@@ -89,7 +96,7 @@ namespace MatraxEngine
 				if (size < 2)
 					throw std::runtime_error("Can't get the Y coordinate !");
 
-				return this->m_data[1];
+				return m_data[1];
 			}
 
 			T GetZ() const
@@ -97,7 +104,7 @@ namespace MatraxEngine
 				if (size < 3)
 					throw std::runtime_error("Can't get the Z coordinate !");
 
-				return this->m_data[2];
+				return m_data[2];
 			}
 
 			T GetData(unsigned long at) const 
@@ -105,7 +112,7 @@ namespace MatraxEngine
 				if(at >= size)
 					throw std::runtime_error("Can't get the data !");
 
-				return this->m_data[at];
+				return m_data[at];
 			}
 
 			void SetData(unsigned long at, T value)
@@ -113,27 +120,33 @@ namespace MatraxEngine
 				if (at >= size)
 					throw std::runtime_error("Can't set the data !");
 
-				this->m_data[at] = value;
+				m_data[at] = value;
+			}
+
+			T Distance(const Vector<T, size>& other)
+			{
+				T sum = 0;
+
+				for (unsigned long i = 0; i < size; i++)
+					sum += (m_data[i] - other.m_data[i]) * (m_data[i] - other.m_data[i]);
+
+				return std::sqrt(sum);
 			}
 
 			Vector<T, size> operator+(const Vector<T, size> & other)
 			{
 				Vector<T, size> result;
 
-				for (int i = 0; i < size; i++)
-				{
-					result.m_data[i] = this->m_data[i] + other.m_data[i];
-				}
+				for (unsigned long i = 0; i < size; i++)
+					result.m_data[i] = m_data[i] + other.m_data[i];
 
 				return result;
 			}
 
 			Vector<T, size> & operator+=(const Vector<T, size>& other)
 			{
-				for (int i = 0; i < size; i++)
-				{
-					this->m_data[i] = this->m_data[i] + other.m_data[i];
-				}
+				for (unsigned long i = 0; i < size; i++)
+					m_data[i] = m_data[i] + other.m_data[i];
 
 				return *this;
 			}
@@ -142,10 +155,8 @@ namespace MatraxEngine
 			{
 				Vector<T, size> result;
 
-				for (int i = 0; i < size; i++)
-				{
-					result.m_data[i] = this->m_data[i] - other.m_data[i];
-				}
+				for (unsigned long i = 0; i < size; i++)
+					result.m_data[i] = m_data[i] - other.m_data[i];
 
 				return result;
 			}
@@ -154,10 +165,8 @@ namespace MatraxEngine
 			{
 				Vector<T, size> result;
 
-				for (int i = 0; i < size; i++)
-				{
-					result.m_data[i] = this->m_data[i] * other.m_data[i];
-				}
+				for (unsigned long i = 0; i < size; i++)
+					result.m_data[i] = m_data[i] * other.m_data[i];
 
 				return result;
 			}
@@ -166,10 +175,8 @@ namespace MatraxEngine
 			{
 				Vector<T, size> result;
 
-				for (int i = 0; i < size; i++)
-				{
-					result.m_data[i] = this->m_data[i] * other;
-				}
+				for (unsigned long i = 0; i < size; i++)
+					result.m_data[i] = m_data[i] * other;
 
 				return result;
 			}
