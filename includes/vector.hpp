@@ -9,177 +9,177 @@ namespace QuickMathCpp
 {
 	template<typename T, unsigned int size> class Vector
 	{
-		private:
+	private:
 
-			T m_data[size];
+		T m_data[size];
 
-		public:
+	public:
 
-			Vector<T, size>()
+		Vector<T, size>()
+		{
+			for (unsigned long i = 0; i < size; i++)
+				m_data[i] = 0;
+		}
+
+		Vector<T, size>(Vector<T, size>& copy)
+		{
+			for (unsigned long i = 0; i < size; i++)
+				m_data[i] = copy.m_data[i];
+		}
+
+		Vector<T, size>(const Vector<T, size>& copy)
+		{
+			for (unsigned long i = 0; i < size; i++)
+				m_data[i] = copy.m_data[i];
+		}
+
+		Vector<T, size>(T x, T y)
+		{
+			if (size < 2)
+				throw std::runtime_error("Can't instantiate with 2 parameters !");
+
+			m_data[0] = x;
+			m_data[1] = y;
+		}
+
+		Vector<T, size>(T x, T y, T z)
+		{
+			if (size < 3)
+				throw std::runtime_error("Can't instantiate with 3 parameters !");
+
+			m_data[0] = x;
+			m_data[1] = y;
+			m_data[2] = z;
+		}
+
+		Vector<T, size>(T x, T y, T z, T w)
+		{
+			if (size < 4)
+				throw std::runtime_error("Can't instantiate with 4 parameters !");
+
+			m_data[0] = x;
+			m_data[1] = y;
+			m_data[2] = z;
+			m_data[3] = w;
+		}
+
+		std::string ToString() const
+		{
+			std::string str("[ ");
+
+			for (unsigned long i = 0; i < size - 1; i++)
 			{
-				for (unsigned long i = 0; i < size; i++)
-					m_data[i] = 0;
+				std::string data = std::to_string(m_data[i]);
+				str.append(data);
+				str.append(",");
 			}
 
-			Vector<T, size>(Vector<T, size>& copy)
-			{
-				for (unsigned long i = 0; i < size; i++)
-					m_data[i] = copy.m_data[i];
-			}
+			std::string last_data = std::to_string(m_data[size - 1]);
+			str.append(last_data);
+			str.append(" ]");
 
-			Vector<T, size>(const Vector<T, size> & copy)
-			{
-				for (unsigned long i = 0; i < size; i++)
-					m_data[i] = copy.m_data[i];
-			}
+			return str;
+		}
 
-			Vector<T, size>(T x, T y)
-			{
-				if (size < 2)
-					throw std::runtime_error("Can't instantiate with 2 parameters !");
+		T* GetPtr()
+		{
+			return m_data;
+		}
 
-				m_data[0] = x;
-				m_data[1] = y;
-			}
+		T GetX() const
+		{
+			return m_data[0];
+		}
 
-			Vector<T, size>(T x, T y, T z)
-			{
-				if (size < 3)
-					throw std::runtime_error("Can't instantiate with 3 parameters !");
+		T GetY() const
+		{
+			if (size < 2)
+				throw std::runtime_error("Can't get the Y coordinate !");
 
-				m_data[0] = x;
-				m_data[1] = y;
-				m_data[2] = z;
-			}
+			return m_data[1];
+		}
 
-			Vector<T, size>(T x, T y, T z, T w)
-			{
-				if (size < 4)
-					throw std::runtime_error("Can't instantiate with 4 parameters !");
+		T GetZ() const
+		{
+			if (size < 3)
+				throw std::runtime_error("Can't get the Z coordinate !");
 
-				m_data[0] = x;
-				m_data[1] = y;
-				m_data[2] = z;
-				m_data[3] = w;
-			}
+			return m_data[2];
+		}
 
-			std::string ToString() const
-			{
-				std::string str("[ ");
+		T GetData(unsigned long at) const
+		{
+			if (at >= size)
+				throw std::runtime_error("Can't get the data !");
 
-				for (unsigned long i = 0; i < size - 1; i++)
-				{
-					std::string data = std::to_string(m_data[i]);
-					str.append(data);
-					str.append(",");
-				}
+			return m_data[at];
+		}
 
-				std::string last_data = std::to_string(m_data[size - 1]);
-				str.append(last_data);
-				str.append(" ]");
+		void SetData(unsigned long at, T value)
+		{
+			if (at >= size)
+				throw std::runtime_error("Can't set the data !");
 
-				return str;
-			}
+			m_data[at] = value;
+		}
 
-			T * GetPtr()
-			{
-				return m_data;
-			}
+		T Distance(const Vector<T, size>& other)
+		{
+			T sum = 0;
 
-			T GetX() const
-			{
-				return m_data[0];
-			}
+			for (unsigned long i = 0; i < size; i++)
+				sum += (m_data[i] - other.m_data[i]) * (m_data[i] - other.m_data[i]);
 
-			T GetY() const
-			{
-				if (size < 2)
-					throw std::runtime_error("Can't get the Y coordinate !");
+			return std::sqrt(sum);
+		}
 
-				return m_data[1];
-			}
+		Vector<T, size> operator+(const Vector<T, size>& other)
+		{
+			Vector<T, size> result;
 
-			T GetZ() const
-			{
-				if (size < 3)
-					throw std::runtime_error("Can't get the Z coordinate !");
+			for (unsigned long i = 0; i < size; i++)
+				result.m_data[i] = m_data[i] + other.m_data[i];
 
-				return m_data[2];
-			}
+			return result;
+		}
 
-			T GetData(unsigned long at) const 
-			{
-				if(at >= size)
-					throw std::runtime_error("Can't get the data !");
+		Vector<T, size>& operator+=(const Vector<T, size>& other)
+		{
+			for (unsigned long i = 0; i < size; i++)
+				m_data[i] = m_data[i] + other.m_data[i];
 
-				return m_data[at];
-			}
+			return *this;
+		}
 
-			void SetData(unsigned long at, T value)
-			{
-				if (at >= size)
-					throw std::runtime_error("Can't set the data !");
+		Vector<T, size> operator-(const Vector<T, size>& other)
+		{
+			Vector<T, size> result;
 
-				m_data[at] = value;
-			}
+			for (unsigned long i = 0; i < size; i++)
+				result.m_data[i] = m_data[i] - other.m_data[i];
 
-			T Distance(const Vector<T, size>& other)
-			{
-				T sum = 0;
+			return result;
+		}
 
-				for (unsigned long i = 0; i < size; i++)
-					sum += (m_data[i] - other.m_data[i]) * (m_data[i] - other.m_data[i]);
+		Vector<T, size> operator*(const Vector<T, size>& other)
+		{
+			Vector<T, size> result;
 
-				return std::sqrt(sum);
-			}
+			for (unsigned long i = 0; i < size; i++)
+				result.m_data[i] = m_data[i] * other.m_data[i];
 
-			Vector<T, size> operator+(const Vector<T, size> & other)
-			{
-				Vector<T, size> result;
+			return result;
+		}
 
-				for (unsigned long i = 0; i < size; i++)
-					result.m_data[i] = m_data[i] + other.m_data[i];
+		Vector<T, size> operator*(const T other)
+		{
+			Vector<T, size> result;
 
-				return result;
-			}
+			for (unsigned long i = 0; i < size; i++)
+				result.m_data[i] = m_data[i] * other;
 
-			Vector<T, size> & operator+=(const Vector<T, size>& other)
-			{
-				for (unsigned long i = 0; i < size; i++)
-					m_data[i] = m_data[i] + other.m_data[i];
-
-				return *this;
-			}
-
-			Vector<T, size> operator-(const Vector<T, size>& other)
-			{
-				Vector<T, size> result;
-
-				for (unsigned long i = 0; i < size; i++)
-					result.m_data[i] = m_data[i] - other.m_data[i];
-
-				return result;
-			}
-
-			Vector<T, size> operator*(const Vector<T, size>& other)
-			{
-				Vector<T, size> result;
-
-				for (unsigned long i = 0; i < size; i++)
-					result.m_data[i] = m_data[i] * other.m_data[i];
-
-				return result;
-			}
-
-			Vector<T, size> operator*(const T other)
-			{
-				Vector<T, size> result;
-
-				for (unsigned long i = 0; i < size; i++)
-					result.m_data[i] = m_data[i] * other;
-
-				return result;
-			}
+			return result;
+		}
 	};
 
 	// Usings
