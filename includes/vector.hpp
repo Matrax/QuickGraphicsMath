@@ -5,7 +5,9 @@
 #include <exception>
 #include <stdexcept>
 
-namespace QuickMathCpp
+#include "defines.hpp"
+
+namespace qgm
 {
 	template<typename T, unsigned int size> class Vector
 	{
@@ -107,12 +109,49 @@ namespace QuickMathCpp
 			return m_data[2];
 		}
 
+		T GetW() const
+		{
+			if (size < 4)
+				throw std::runtime_error("Can't get the W coordinate !");
+
+			return m_data[3];
+		}
+
 		T GetData(unsigned long at) const
 		{
 			if (at >= size)
 				throw std::runtime_error("Can't get the data !");
 
 			return m_data[at];
+		}
+
+		void SetX(T x)
+		{
+			m_data[0] = x;
+		}
+
+		void SetY(T y)
+		{
+			if (size < 2)
+				throw std::runtime_error("Can't set the Y coordinate !");
+
+			m_data[1] = y;
+		}
+
+		void SetZ(T z)
+		{
+			if (size < 3)
+				throw std::runtime_error("Can't set the Z coordinate !");
+
+			m_data[2] = z;
+		}
+
+		void SetW(T w)
+		{
+			if (size < 4)
+				throw std::runtime_error("Can't set the W coordinate !");
+
+			m_data[3] = w;
 		}
 
 		void SetData(unsigned long at, T value)
@@ -123,17 +162,61 @@ namespace QuickMathCpp
 			m_data[at] = value;
 		}
 
-		T Distance(const Vector<T, size>& other)
+		T Distance(Vector<T, size> other)
 		{
-			T sum = 0;
-
+			double sum = 0;
 			for (unsigned long i = 0; i < size; i++)
 				sum += (m_data[i] - other.m_data[i]) * (m_data[i] - other.m_data[i]);
 
-			return std::sqrt(sum);
+			return static_cast<T>(std::abs(std::sqrt(sum)));
 		}
 
-		Vector<T, size> operator+(const Vector<T, size>& other)
+		T Magnitude()
+		{
+			double magnitude = 0;
+			for (unsigned long i = 0; i < size; i++)
+				magnitude += m_data[i] * m_data[i];
+
+			return static_cast<T>(std::sqrt(magnitude));
+		}
+
+		T Dot(Vector<T, size> other)
+		{
+			double dot = 0;
+			for (unsigned long i = 0; i < size; i++)
+				dot += m_data[i] * other.m_data[i];
+
+			return static_cast<T>(dot);
+		}
+
+		Vector<T, size> Cross(Vector<T, size> other)
+		{
+			if (size < 3)
+				throw std::runtime_error("Can't get the cross product !");
+
+			Vector<T, size> result;
+			result.m_data[0] = m_data[1] * other.m_data[2] - m_data[2] * other.m_data[1];
+			result.m_data[1] = m_data[2] * other.m_data[0] - m_data[0] * other.m_data[2];
+			result.m_data[2] = m_data[0] * other.m_data[1] - m_data[1] * other.m_data[0];
+			return result;
+		}
+
+		Vector<T, size> Normalize()
+		{
+			Vector<T, size> result;
+
+			T magnitude = Magnitude();
+			if (magnitude == 0)
+				return result;
+
+			double magnitude_inv = 1.0 / magnitude;
+			for (unsigned long i = 0; i < size; i++)
+				result.m_data[i] = m_data[i] * magnitude_inv;
+
+			return static_cast<T>(result);
+		}
+
+		Vector<T, size> operator+(Vector<T, size> other)
 		{
 			Vector<T, size> result;
 
@@ -143,7 +226,7 @@ namespace QuickMathCpp
 			return result;
 		}
 
-		Vector<T, size>& operator+=(const Vector<T, size>& other)
+		Vector<T, size>& operator+=(Vector<T, size> other)
 		{
 			for (unsigned long i = 0; i < size; i++)
 				m_data[i] = m_data[i] + other.m_data[i];
@@ -151,7 +234,7 @@ namespace QuickMathCpp
 			return *this;
 		}
 
-		Vector<T, size> operator-(const Vector<T, size>& other)
+		Vector<T, size> operator-(Vector<T, size> other)
 		{
 			Vector<T, size> result;
 
@@ -161,7 +244,7 @@ namespace QuickMathCpp
 			return result;
 		}
 
-		Vector<T, size> operator*(const Vector<T, size>& other)
+		Vector<T, size> operator*(Vector<T, size> other)
 		{
 			Vector<T, size> result;
 
@@ -171,7 +254,7 @@ namespace QuickMathCpp
 			return result;
 		}
 
-		Vector<T, size> operator*(const T other)
+		Vector<T, size> operator*(T other)
 		{
 			Vector<T, size> result;
 

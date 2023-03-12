@@ -1,13 +1,15 @@
 #pragma once
 
-#include "vector.hpp"
-
 #include <string>
 #include <cmath>
 #include <exception>
 #include <stdexcept>
+#include <iostream>
 
-namespace QuickMathCpp
+#include "defines.hpp"
+#include "vector.hpp"
+
+namespace qgm
 {
 	/*
 	* This class allow to create a matrix of n * m size with any primitive type, in row-major order.
@@ -56,14 +58,15 @@ namespace QuickMathCpp
 		{
 			Matrix<T, n, m> result;
 
+			unsigned long j = 0;
 			for (unsigned long i = 0; i < n * m; i++)
 			{
-				if (i % j == 0)
+				if (i == j)
 				{
-					result.m_data[j + i * n] = 1;
-				}
-				else {
-					result.m_data[j + i * n] = 0;
+					result.m_data[i] = 1;
+					j += n + 1;
+				} else {
+					result.m_data[i] = 0;
 				}
 			}
 
@@ -73,22 +76,90 @@ namespace QuickMathCpp
 		static Matrix<T, 4, 4> Translation(Vector3f translation)
 		{
 			Matrix<T, 4, 4> result = Identity();
-
 			result.m_data[3] = translation.GetX();
 			result.m_data[7] = translation.GetY();
 			result.m_data[11] = translation.GetZ();
-
 			return result;
 		}
 
 		static Matrix<T, 4, 4> Scale(Vector3f scale)
 		{
 			Matrix<T, 4, 4> result = Identity();
-
 			result.m_data[0] = scale.GetX();
 			result.m_data[5] = scale.GetY();
 			result.m_data[10] = scale.GetZ();
+			return result;
+		}
 
+		static Matrix<T, 4, 4> RotationX(float rotation)
+		{
+			Matrix<T, 4, 4> result = Identity();
+			result.m_data[5] = std::cos(rotation);
+			result.m_data[6] = std::sin(rotation);
+			result.m_data[9] = -std::sin(rotation);
+			result.m_data[10] = std::cos(rotation);
+			return result;
+		}
+
+		static Matrix<T, 4, 4> RotationY(float rotation)
+		{
+			Matrix<T, 4, 4> result = Identity();
+			result.m_data[0] = std::cos(rotation);
+			result.m_data[2] = std::sin(rotation);
+			result.m_data[8] = -std::sin(rotation);
+			result.m_data[10] = std::cos(rotation);
+			return result;
+		}
+
+		static Matrix<T, 4, 4> RotationZ(float rotation)
+		{
+			Matrix<T, 4, 4> result = Identity();
+			result.m_data[0] = std::cos(rotation);
+			result.m_data[1] = std::sin(rotation);
+			result.m_data[4] = -std::sin(rotation);
+			result.m_data[5] = std::cos(rotation);
+			return result;
+		}
+
+		static Matrix<T, 4, 4> Rotation(Vector3f rotation)
+		{
+			Matrix<T, 4, 4> result = RotationX(rotation.GetX()) * RotationY(rotation.GetY()) * RotationZ(rotation.GetZ());
+			return result;
+		}
+
+		static Matrix<T, 4, 4> LookAt(Vector3f position, Vector3f direction, Vector3f world_up = Vector3f(0.0f, 1.0f, 0.0f))
+		{
+			Vector3f forward = direction.Normalize();
+			Vector3f right = forward.Cross(world_up).Normalize();
+			Vector3f up = right.Cross(forward).Normalize();
+
+			Matrix<T, 4, 4> camera_translation = Translation(Vector3f(-position.GetX(), -position.GetY(), -position.GetZ()));
+
+			Matrix<T, 4, 4> camera_rotation = Identity();
+			camera_rotation.m_data[0] = right.GetX();
+			camera_rotation.m_data[1] = right.GetY();
+			camera_rotation.m_data[2] = right.GetZ();
+			camera_rotation.m_data[4] = up.GetX();
+			camera_rotation.m_data[5] = up.GetY();
+			camera_rotation.m_data[6] = up.GetZ();
+			camera_rotation.m_data[8] = -forward.GetX();
+			camera_rotation.m_data[9] = -forward.GetY();
+			camera_rotation.m_data[10] = -forward.GetZ();
+			
+			Matrix<T, 4, 4> result = camera_translation * camera_rotation;
+ 
+			return result;
+		}
+
+		static Matrix<T, 4, 4> PerspectiveProjection(const float nearZ, const float farZ, const float field_of_view, const float aspect_ratio)
+		{
+			Matrix<T, 4, 4> result = Identity();
+			result.m_data[0] = 1.0f / (std::tan(field_of_view / 2.0f * RADIANS_MULTIPLY));
+			result.m_data[5] = 1.0f / (std::tan(field_of_view / 2.0f * RADIANS_MULTIPLY)) * aspect_ratio;
+			result.m_data[10] = -farZ / (farZ - nearZ);
+			result.m_data[11] = -2 * (farZ * nearZ) / (farZ - nearZ);
+			result.m_data[14] = -1.0f;
+			result.m_data[15] = 0.0f;
 			return result;
 		}
 
@@ -104,7 +175,7 @@ namespace QuickMathCpp
 				str.append(",");
 			}
 
-			std::string last_data = std::to_string(m_data[size - 1]);
+			std::string last_data = std::to_string(m_data[n * m - 1]);
 			str.append(last_data);
 			str.append(" ]");
 
@@ -132,7 +203,7 @@ namespace QuickMathCpp
 			m_data[at] = value;
 		}
 
-		Matrix<T, n, m> operator+(const Matrix<T, n, m>& other)
+		Matrix<T, n, m> operator+(Matrix<T, n, m> other)
 		{
 			Matrix<T, n, m> result;
 
@@ -142,7 +213,7 @@ namespace QuickMathCpp
 			return result;
 		}
 
-		Matrix<T, n, m>& operator+=(const Matrix<T, n, m>& other)
+		Matrix<T, n, m>& operator+=(Matrix<T, n, m> other)
 		{
 			for (unsigned long i = 0; i < n * m; i++)
 				m_data[i] = m_data[i] + other.m_data[i];
@@ -150,7 +221,7 @@ namespace QuickMathCpp
 			return *this;
 		}
 
-		Matrix<T, n, m> operator-(const Matrix<T, n, m>& other)
+		Matrix<T, n, m> operator-(Matrix<T, n, m> other)
 		{
 			Matrix<T, n, m> result;
 
@@ -160,7 +231,7 @@ namespace QuickMathCpp
 			return result;
 		}
 
-		Matrix<T, n, m> operator*(const Matrix<T, n, m>& other)
+		Matrix<T, n, m> operator*(Matrix<T, n, m> other)
 		{
 			Matrix<T, n, m> result;
 
@@ -178,7 +249,7 @@ namespace QuickMathCpp
 			return result;
 		}
 
-		Matrix<T, n, m> operator*(const T other)
+		Matrix<T, n, m> operator*(T other)
 		{
 			Matrix<T, n, m> result;
 
@@ -188,7 +259,7 @@ namespace QuickMathCpp
 			return result;
 		}
 
-		Vector<T, m> operator*(const Vector<T, m> other)
+		Vector<T, m> operator*(Vector<T, m> other)
 		{
 			Vector<T, m> result;
 
