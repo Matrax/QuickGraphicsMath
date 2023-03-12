@@ -154,8 +154,8 @@ namespace qgm
 		static Matrix<T, 4, 4> PerspectiveProjection(const float nearZ, const float farZ, const float field_of_view, const float aspect_ratio)
 		{
 			Matrix<T, 4, 4> result = Identity();
-			result.m_data[0] = 1.0f / (std::tan(field_of_view / 2.0f * RADIANS_MULTIPLY));
-			result.m_data[5] = 1.0f / (std::tan(field_of_view / 2.0f * RADIANS_MULTIPLY)) * aspect_ratio;
+			result.m_data[0] = 1.0f / (std::tan(field_of_view / 2.0f * qgm::RADIANS_MULTIPLY));
+			result.m_data[5] = 1.0f / (std::tan(field_of_view / 2.0f * qgm::RADIANS_MULTIPLY)) * aspect_ratio;
 			result.m_data[10] = -farZ / (farZ - nearZ);
 			result.m_data[11] = -2 * (farZ * nearZ) / (farZ - nearZ);
 			result.m_data[14] = -1.0f;
@@ -283,4 +283,3 @@ namespace qgm
 	using Matrix3i = Matrix<int, 3, 3>;
 	using Matrix4i = Matrix<int, 4, 4>;
 }
-

@@ -211,9 +211,9 @@ namespace qgm
 
 			double magnitude_inv = 1.0 / magnitude;
 			for (unsigned long i = 0; i < size; i++)
-				result.m_data[i] = m_data[i] * magnitude_inv;
+				result.m_data[i] = static_cast<T>(m_data[i] * magnitude_inv);
 
-			return static_cast<T>(result);
+			return result;
 		}
 
 		Vector<T, size> operator+(Vector<T, size> other)
@@ -273,4 +273,3 @@ namespace qgm
 	using Vector3i = Vector<int, 3>;
 	using Vector4i = Vector<int, 4>;
 }
-
