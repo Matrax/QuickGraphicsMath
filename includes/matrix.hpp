@@ -127,7 +127,27 @@ namespace qgm
 			return result;
 		}
 
-		static Matrix<T, 4, 4> LookAt(Vector3f position, Vector3f direction, Vector3f world_up = Vector3f(0.0f, 1.0f, 0.0f))
+		static Matrix<T, 4, 4> ViewMatrixNoTranslation(Vector3f direction, Vector3f world_up = Vector3f(0.0f, 1.0f, 0.0f))
+		{
+			Vector3f forward = direction.Normalize();
+			Vector3f right = forward.Cross(world_up).Normalize();
+			Vector3f up = right.Cross(forward).Normalize();
+
+			Matrix<T, 4, 4> camera_rotation = Identity();
+			camera_rotation.m_data[0] = right.GetX();
+			camera_rotation.m_data[1] = right.GetY();
+			camera_rotation.m_data[2] = right.GetZ();
+			camera_rotation.m_data[4] = up.GetX();
+			camera_rotation.m_data[5] = up.GetY();
+			camera_rotation.m_data[6] = up.GetZ();
+			camera_rotation.m_data[8] = -forward.GetX();
+			camera_rotation.m_data[9] = -forward.GetY();
+			camera_rotation.m_data[10] = -forward.GetZ();
+ 
+			return camera_rotation;
+		}
+
+		static Matrix<T, 4, 4> ViewMatrix(Vector3f position, Vector3f direction, Vector3f world_up = Vector3f(0.0f, 1.0f, 0.0f))
 		{
 			Vector3f forward = direction.Normalize();
 			Vector3f right = forward.Cross(world_up).Normalize();
