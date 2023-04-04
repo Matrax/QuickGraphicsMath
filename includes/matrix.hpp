@@ -8,6 +8,7 @@
 
 #include "defines.hpp"
 #include "vector.hpp"
+#include "trigonometry.hpp"
 
 namespace qgm
 {
@@ -94,30 +95,30 @@ namespace qgm
 		static Matrix<T, 4, 4> RotationX(float rotation)
 		{
 			Matrix<T, 4, 4> result = Identity();
-			result.m_data[5] = std::cos(rotation);
-			result.m_data[6] = std::sin(rotation);
-			result.m_data[9] = -std::sin(rotation);
-			result.m_data[10] = std::cos(rotation);
+			result.m_data[5] = qgm::cos(rotation);
+			result.m_data[6] = qgm::sin(rotation);
+			result.m_data[9] = -qgm::sin(rotation);
+			result.m_data[10] = qgm::cos(rotation);
 			return result;
 		}
 
 		static Matrix<T, 4, 4> RotationY(float rotation)
 		{
 			Matrix<T, 4, 4> result = Identity();
-			result.m_data[0] = std::cos(rotation);
-			result.m_data[2] = std::sin(rotation);
-			result.m_data[8] = -std::sin(rotation);
-			result.m_data[10] = std::cos(rotation);
+			result.m_data[0] = qgm::cos(rotation);
+			result.m_data[2] = qgm::sin(rotation);
+			result.m_data[8] = -qgm::sin(rotation);
+			result.m_data[10] = qgm::cos(rotation);
 			return result;
 		}
 
 		static Matrix<T, 4, 4> RotationZ(float rotation)
 		{
 			Matrix<T, 4, 4> result = Identity();
-			result.m_data[0] = std::cos(rotation);
-			result.m_data[1] = std::sin(rotation);
-			result.m_data[4] = -std::sin(rotation);
-			result.m_data[5] = std::cos(rotation);
+			result.m_data[0] = qgm::cos(rotation);
+			result.m_data[1] = qgm::sin(rotation);
+			result.m_data[4] = -qgm::sin(rotation);
+			result.m_data[5] = qgm::cos(rotation);
 			return result;
 		}
 
@@ -167,15 +168,14 @@ namespace qgm
 			camera_rotation.m_data[10] = -forward.GetZ();
 			
 			Matrix<T, 4, 4> result = camera_translation * camera_rotation;
- 
 			return result;
 		}
 
 		static Matrix<T, 4, 4> PerspectiveProjection(const float nearZ, const float farZ, const float field_of_view, const float aspect_ratio)
 		{
 			Matrix<T, 4, 4> result = Identity();
-			result.m_data[0] = 1.0f / (std::tan(field_of_view / 2.0f * qgm::RADIANS_MULTIPLY));
-			result.m_data[5] = 1.0f / (std::tan(field_of_view / 2.0f * qgm::RADIANS_MULTIPLY)) * aspect_ratio;
+			result.m_data[0] = 1.0f / (qgm::tan(field_of_view / 2.0f * qgm::RADIANS_MULTIPLY));
+			result.m_data[5] = 1.0f / (qgm::tan(field_of_view / 2.0f * qgm::RADIANS_MULTIPLY)) * aspect_ratio;
 			result.m_data[10] = -farZ / (farZ - nearZ);
 			result.m_data[11] = -2 * (farZ * nearZ) / (farZ - nearZ);
 			result.m_data[14] = -1.0f;
@@ -186,7 +186,6 @@ namespace qgm
 		std::string ToString() const
 		{
 			std::string str("[ ");
-
 			for (unsigned long i = 0; i < n * m - 1; i++)
 			{
 				if (i % n == 0 && i != 0) str.append("\n  ");
@@ -194,15 +193,13 @@ namespace qgm
 				str.append(data);
 				str.append(",");
 			}
-
 			std::string last_data = std::to_string(m_data[n * m - 1]);
 			str.append(last_data);
 			str.append(" ]");
-
 			return str;
 		}
 
-		T* GetPtr()
+		T * GetPtr()
 		{
 			return m_data;
 		}
@@ -215,7 +212,7 @@ namespace qgm
 			return m_data[at];
 		}
 
-		void SetData(unsigned long at, T value)
+		void SetData(const unsigned long at, T value)
 		{
 			if (at >= n * m)
 				throw std::runtime_error("Can't set the data !");

@@ -11,6 +11,8 @@ It's not the fastest library for math, but easy to use and install in your proje
 
 - Matrix (in row-major order and with somes utility functions for 4x4 matrices useful in graphics software, like translation, rotation, projection matrix, all the operations with vectors...)
 - Vector (cross product, dot product, magnitude, distance...)
+- Trigonometry functions
+- Useful functions like circle and sphere equations, linear interpolation
 
 ## Includes
 
