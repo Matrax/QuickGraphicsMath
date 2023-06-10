@@ -1,14 +1,14 @@
 #pragma once
 
+// STD includes
 #include <string>
-#include <cmath>
 #include <exception>
 #include <stdexcept>
-#include <iostream>
 
+// QGM includes
 #include "defines.hpp"
 #include "vector.hpp"
-#include "trigonometry.hpp"
+#include "math.hpp"
 
 namespace qgm
 {
@@ -23,7 +23,7 @@ namespace qgm
 	* [8,  9,  10, 11]
 	* [12, 13, 14, 15]
 	*/
-	template<typename T, unsigned int n, unsigned int m> class Matrix
+	template<typename T, size_t n, size_t m> class Matrix
 	{
 	private:
 
@@ -33,25 +33,25 @@ namespace qgm
 
 		Matrix<T, n, m>()
 		{
-			for (unsigned long i = 0; i < n * m; i++)
+			for (size_t i = 0; i < n * m; i++)
 				m_data[i] = 0;
 		}
 
 		Matrix<T, n, m>(Matrix<T, n, m>& copy)
 		{
-			for (unsigned long i = 0; i < n * m; i++)
+			for (size_t i = 0; i < n * m; i++)
 				m_data[i] = copy.m_data[i];
 		}
 
 		Matrix<T, n, m>(const Matrix<T, n, m>& copy)
 		{
-			for (unsigned long i = 0; i < n * m; i++)
+			for (size_t i = 0; i < n * m; i++)
 				m_data[i] = copy.m_data[i];
 		}
 
 		Matrix<T, n, m>(const T data[n * m])
 		{
-			for (unsigned long i = 0; i < n * m; i++)
+			for (size_t i = 0; i < n * m; i++)
 				m_data[i] = data[i];
 		}
 
@@ -59,22 +59,20 @@ namespace qgm
 		{
 			Matrix<T, n, m> result;
 
-			unsigned long j = 0;
-			for (unsigned long i = 0; i < n * m; i++)
+			size_t j = 0;
+			for (size_t i = 0; i < n * m; i++)
 			{
 				if (i == j)
 				{
 					result.m_data[i] = 1;
 					j += n + 1;
-				} else {
-					result.m_data[i] = 0;
 				}
 			}
 
 			return result;
 		}
 
-		static Matrix<T, 4, 4> Translation(Vector3f translation)
+		static Matrix<T, 4, 4> Translation(const Vector3f translation)
 		{
 			Matrix<T, 4, 4> result = Identity();
 			result.m_data[3] = translation.GetX();
@@ -83,7 +81,7 @@ namespace qgm
 			return result;
 		}
 
-		static Matrix<T, 4, 4> Scale(Vector3f scale)
+		static Matrix<T, 4, 4> Scale(const Vector3f scale)
 		{
 			Matrix<T, 4, 4> result = Identity();
 			result.m_data[0] = scale.GetX();
@@ -92,7 +90,7 @@ namespace qgm
 			return result;
 		}
 
-		static Matrix<T, 4, 4> RotationX(float rotation)
+		static Matrix<T, 4, 4> RotationX(const float rotation)
 		{
 			Matrix<T, 4, 4> result = Identity();
 			result.m_data[5] = qgm::cos(rotation);
@@ -102,7 +100,7 @@ namespace qgm
 			return result;
 		}
 
-		static Matrix<T, 4, 4> RotationY(float rotation)
+		static Matrix<T, 4, 4> RotationY(const float rotation)
 		{
 			Matrix<T, 4, 4> result = Identity();
 			result.m_data[0] = qgm::cos(rotation);
@@ -112,7 +110,7 @@ namespace qgm
 			return result;
 		}
 
-		static Matrix<T, 4, 4> RotationZ(float rotation)
+		static Matrix<T, 4, 4> RotationZ(const float rotation)
 		{
 			Matrix<T, 4, 4> result = Identity();
 			result.m_data[0] = qgm::cos(rotation);
@@ -122,7 +120,7 @@ namespace qgm
 			return result;
 		}
 
-		static Matrix<T, 4, 4> Rotation(Vector3f rotation)
+		static Matrix<T, 4, 4> Rotation(const Vector3f rotation)
 		{
 			Matrix<T, 4, 4> result = RotationX(rotation.GetX()) * RotationY(rotation.GetY()) * RotationZ(rotation.GetZ());
 			return result;
@@ -174,8 +172,8 @@ namespace qgm
 		static Matrix<T, 4, 4> PerspectiveProjection(const float nearZ, const float farZ, const float field_of_view, const float aspect_ratio)
 		{
 			Matrix<T, 4, 4> result = Identity();
-			result.m_data[0] = 1.0f / (qgm::tan(field_of_view / 2.0f * qgm::RADIANS_MULTIPLY));
-			result.m_data[5] = 1.0f / (qgm::tan(field_of_view / 2.0f * qgm::RADIANS_MULTIPLY)) * aspect_ratio;
+			result.m_data[0] = 1.0f / (qgm::tan(field_of_view / 2.0f * qgm::RADIANS_FACTOR));
+			result.m_data[5] = 1.0f / (qgm::tan(field_of_view / 2.0f * qgm::RADIANS_FACTOR)) * aspect_ratio;
 			result.m_data[10] = -farZ / (farZ - nearZ);
 			result.m_data[11] = -2 * (farZ * nearZ) / (farZ - nearZ);
 			result.m_data[14] = -1.0f;
@@ -186,16 +184,18 @@ namespace qgm
 		std::string ToString() const
 		{
 			std::string str("[ ");
-			for (unsigned long i = 0; i < n * m - 1; i++)
+			for (size_t i = 0; i < n * m - 1; i++)
 			{
 				if (i % n == 0 && i != 0) str.append("\n  ");
 				std::string data = std::to_string(m_data[i]);
 				str.append(data);
 				str.append(",");
 			}
+
 			std::string last_data = std::to_string(m_data[n * m - 1]);
 			str.append(last_data);
 			str.append(" ]");
+			
 			return str;
 		}
 
@@ -212,7 +212,7 @@ namespace qgm
 			return m_data[at];
 		}
 
-		void SetData(const unsigned long at, T value)
+		void SetData(const size_t at, T value)
 		{
 			if (at >= n * m)
 				throw std::runtime_error("Can't set the data !");
@@ -224,7 +224,7 @@ namespace qgm
 		{
 			Matrix<T, n, m> result;
 
-			for (unsigned long i = 0; i < n * m; i++)
+			for (size_t i = 0; i < n * m; i++)
 				result.m_data[i] = m_data[i] + other.m_data[i];
 
 			return result;
@@ -232,7 +232,7 @@ namespace qgm
 
 		Matrix<T, n, m>& operator+=(Matrix<T, n, m> other)
 		{
-			for (unsigned long i = 0; i < n * m; i++)
+			for (size_t i = 0; i < n * m; i++)
 				m_data[i] = m_data[i] + other.m_data[i];
 
 			return *this;
@@ -242,7 +242,7 @@ namespace qgm
 		{
 			Matrix<T, n, m> result;
 
-			for (unsigned long i = 0; i < n * m; i++)
+			for (size_t i = 0; i < n * m; i++)
 				result.m_data[i] = m_data[i] - other.m_data[i];
 
 			return result;
@@ -252,11 +252,11 @@ namespace qgm
 		{
 			Matrix<T, n, m> result;
 
-			for (unsigned long i = 0; i < n; i++)
+			for (size_t i = 0; i < n; i++)
 			{
-				for (unsigned long j = 0; j < m; j++)
+				for (size_t j = 0; j < m; j++)
 				{
-					for (unsigned long k = 0; k < n; k++)
+					for (size_t k = 0; k < n; k++)
 					{
 						result.m_data[j + i * n] += m_data[j + k * m] * other.m_data[k + i * m];
 					}
@@ -270,7 +270,7 @@ namespace qgm
 		{
 			Matrix<T, n, m> result;
 
-			for (unsigned long i = 0; i < n * m; i++)
+			for (size_t i = 0; i < n * m; i++)
 				result.m_data[i] = m_data[i] * other;
 
 			return result;
@@ -280,9 +280,9 @@ namespace qgm
 		{
 			Vector<T, m> result;
 
-			for (unsigned long i = 0; i < n; i++)
+			for (size_t i = 0; i < n; i++)
 			{
-				for (unsigned long j = 0; j < m; j++)
+				for (size_t j = 0; j < m; j++)
 				{
 					result.SetData(i, result.GetData(i) + m_data[j + i * n] * other.GetData(j));
 				}

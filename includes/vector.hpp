@@ -1,15 +1,17 @@
 #pragma once
 
+// STD includes
 #include <string>
-#include <cmath>
 #include <exception>
 #include <stdexcept>
 
+// QGM includes
 #include "defines.hpp"
+#include "math.hpp"
 
 namespace qgm
 {
-	template<typename T, unsigned int size> class Vector
+	template<typename T, size_t size> class Vector
 	{
 	private:
 
@@ -19,19 +21,19 @@ namespace qgm
 
 		Vector<T, size>()
 		{
-			for (unsigned long i = 0; i < size; i++)
+			for (size_t i = 0; i < size; i++)
 				m_data[i] = 0;
 		}
 
 		Vector<T, size>(Vector<T, size>& copy)
 		{
-			for (unsigned long i = 0; i < size; i++)
+			for (size_t i = 0; i < size; i++)
 				m_data[i] = copy.m_data[i];
 		}
 
 		Vector<T, size>(const Vector<T, size>& copy)
 		{
-			for (unsigned long i = 0; i < size; i++)
+			for (size_t i = 0; i < size; i++)
 				m_data[i] = copy.m_data[i];
 		}
 
@@ -69,7 +71,7 @@ namespace qgm
 		{
 			std::string str("[ ");
 
-			for (unsigned long i = 0; i < size - 1; i++)
+			for (size_t i = 0; i < size - 1; i++)
 			{
 				std::string data = std::to_string(m_data[i]);
 				str.append(data);
@@ -165,7 +167,7 @@ namespace qgm
 		T Distance(Vector<T, size> other)
 		{
 			double sum = 0;
-			for (unsigned long i = 0; i < size; i++)
+			for (size_t i = 0; i < size; i++)
 				sum += (m_data[i] - other.m_data[i]) * (m_data[i] - other.m_data[i]);
 
 			return static_cast<T>(std::abs(std::sqrt(sum)));
@@ -174,7 +176,7 @@ namespace qgm
 		T Magnitude()
 		{
 			double magnitude = 0;
-			for (unsigned long i = 0; i < size; i++)
+			for (size_t i = 0; i < size; i++)
 				magnitude += m_data[i] * m_data[i];
 
 			return static_cast<T>(std::sqrt(magnitude));
@@ -183,7 +185,7 @@ namespace qgm
 		T Dot(Vector<T, size> other)
 		{
 			double dot = 0;
-			for (unsigned long i = 0; i < size; i++)
+			for (size_t i = 0; i < size; i++)
 				dot += m_data[i] * other.m_data[i];
 
 			return static_cast<T>(dot);
@@ -210,7 +212,7 @@ namespace qgm
 				return result;
 
 			double magnitude_inv = 1.0 / magnitude;
-			for (unsigned long i = 0; i < size; i++)
+			for (size_t i = 0; i < size; i++)
 				result.m_data[i] = static_cast<T>(m_data[i] * magnitude_inv);
 
 			return result;
@@ -220,7 +222,7 @@ namespace qgm
 		{
 			Vector<T, size> result;
 
-			for (unsigned long i = 0; i < size; i++)
+			for (size_t i = 0; i < size; i++)
 				result.m_data[i] = m_data[i] + other.m_data[i];
 
 			return result;
@@ -228,7 +230,7 @@ namespace qgm
 
 		Vector<T, size>& operator+=(Vector<T, size> other)
 		{
-			for (unsigned long i = 0; i < size; i++)
+			for (size_t i = 0; i < size; i++)
 				m_data[i] = m_data[i] + other.m_data[i];
 
 			return *this;
@@ -238,7 +240,7 @@ namespace qgm
 		{
 			Vector<T, size> result;
 
-			for (unsigned long i = 0; i < size; i++)
+			for (size_t i = 0; i < size; i++)
 				result.m_data[i] = m_data[i] - other.m_data[i];
 
 			return result;
@@ -248,7 +250,7 @@ namespace qgm
 		{
 			Vector<T, size> result;
 
-			for (unsigned long i = 0; i < size; i++)
+			for (size_t i = 0; i < size; i++)
 				result.m_data[i] = m_data[i] * other.m_data[i];
 
 			return result;
@@ -258,7 +260,7 @@ namespace qgm
 		{
 			Vector<T, size> result;
 
-			for (unsigned long i = 0; i < size; i++)
+			for (size_t i = 0; i < size; i++)
 				result.m_data[i] = m_data[i] * other;
 
 			return result;
