@@ -2,7 +2,7 @@
 #include <iostream>
 
 // QGM includes
-#include <matrix.hpp>
+#include <vector.hpp>
 
 int main()
 {
