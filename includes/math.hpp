@@ -9,54 +9,24 @@
 namespace qgm
 {
 
-    inline float cos(const float t) noexcept
-    {
-        return std::cos(t);
-    }
-
-    inline float sin(const float t) noexcept
-    {
-        return std::sin(t);
-    }
-
-    inline float tan(const float t) noexcept
-    {
-        return std::tan(t);
-    }
-
-    inline float acos(const float t) noexcept
-    {
-        return std::acos(t);
-    }
-
-    inline float asin(const float t) noexcept
-    {
-        return std::asin(t);
-    }
-
-    inline float atan(const float t) noexcept
-    {
-        return std::atan(t);
-    }
-
-    inline float pow(const float x, const float power)
+    inline float pow(const float x, const float power) noexcept
     {
         return std::pow(x, power);
     }
 
-    inline float min(const float a, const float b)
+    inline float min(const float a, const float b) noexcept
     {
         if(a > b) return b;
         return a;
     }
 
-    inline float max(const float a, const float b)
+    inline float max(const float a, const float b) noexcept
     {
         if(a > b) return a;
         return b;
     }
 
-    inline float clamp(const float min, const float x, const float max)
+    inline float clamp(const float min, const float x, const float max) noexcept
     {
         if(x < min) return min;
         if(x > max) return max;
@@ -87,4 +57,12 @@ namespace qgm
     {
         return qgm::pow(x - center_x, 2) * qgm::pow(y - center_y, 2) * qgm::pow(z - center_z, 2) - qgm::pow(radius, 2);
     }
+
+    inline float cos(const float t) noexcept { return std::cos(t); }
+    inline float sin(const float t) noexcept { return std::sin(t); }
+    inline float tan(const float t) noexcept { return std::tan(t); }
+    inline float acos(const float t) noexcept { return std::acos(t); }
+    inline float asin(const float t) noexcept { return std::asin(t); }
+    inline float atan(const float t) noexcept { return std::atan(t); }
+    
 }

@@ -2,7 +2,7 @@
 
 ## Description
 
-QuickGraphicsMath is a C++ header-only library that provide some functions and classes to manipulate vectors, matrices or other
+QuickGraphicsMath is a C++17 header-only library that provide some functions and classes to manipulate vectors, matrices or other
 useful tools in graphics software.
 
 It's not the fastest library for math, but easy to use and install in your project.
