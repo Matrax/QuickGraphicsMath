@@ -72,12 +72,28 @@ namespace qgm
 			return result;
 		}
 
+		static Matrix<T, 3, 3> Translation2D(const Vector2f translation)
+		{
+			Matrix<T, 3, 3> result = Identity();
+			result.m_data[2] = translation.GetX();
+			result.m_data[5] = translation.GetY();
+			return result;
+		}
+
 		static Matrix<T, 4, 4> Translation(const Vector3f translation)
 		{
 			Matrix<T, 4, 4> result = Identity();
 			result.m_data[3] = translation.GetX();
 			result.m_data[7] = translation.GetY();
 			result.m_data[11] = translation.GetZ();
+			return result;
+		}
+
+		static Matrix<T, 3, 3> Scale2D(const Vector2f scale)
+		{
+			Matrix<T, 3, 3> result = Identity();
+			result.m_data[0] = scale.GetX();
+			result.m_data[4] = scale.GetY();
 			return result;
 		}
 
@@ -90,33 +106,43 @@ namespace qgm
 			return result;
 		}
 
+		static Matrix<T, 3, 3> Rotation2D(const float rotation)
+		{
+			Matrix<T, 3, 3> result = Identity();
+			result.m_data[0] = qgm::Cos<float>(rotation);
+			result.m_data[1] = qgm::Sin<float>(rotation);
+			result.m_data[3] = -qgm::Sin<float>(rotation);
+			result.m_data[4] = qgm::Cos<float>(rotation);
+			return result;
+		}
+
 		static Matrix<T, 4, 4> RotationX(const float rotation)
 		{
 			Matrix<T, 4, 4> result = Identity();
-			result.m_data[5] = qgm::cos(rotation);
-			result.m_data[6] = qgm::sin(rotation);
-			result.m_data[9] = -qgm::sin(rotation);
-			result.m_data[10] = qgm::cos(rotation);
+			result.m_data[5] = qgm::Cos<float>(rotation);
+			result.m_data[6] = qgm::Sin<float>(rotation);
+			result.m_data[9] = -qgm::Sin<float>(rotation);
+			result.m_data[10] = qgm::Cos<float>(rotation);
 			return result;
 		}
 
 		static Matrix<T, 4, 4> RotationY(const float rotation)
 		{
 			Matrix<T, 4, 4> result = Identity();
-			result.m_data[0] = qgm::cos(rotation);
-			result.m_data[2] = qgm::sin(rotation);
-			result.m_data[8] = -qgm::sin(rotation);
-			result.m_data[10] = qgm::cos(rotation);
+			result.m_data[0] = qgm::Cos<float>(rotation);
+			result.m_data[2] = qgm::Sin<float>(rotation);
+			result.m_data[8] = -qgm::Sin<float>(rotation);
+			result.m_data[10] = qgm::Cos<float>(rotation);
 			return result;
 		}
 
 		static Matrix<T, 4, 4> RotationZ(const float rotation)
 		{
 			Matrix<T, 4, 4> result = Identity();
-			result.m_data[0] = qgm::cos(rotation);
-			result.m_data[1] = qgm::sin(rotation);
-			result.m_data[4] = -qgm::sin(rotation);
-			result.m_data[5] = qgm::cos(rotation);
+			result.m_data[0] = qgm::Cos<float>(rotation);
+			result.m_data[1] = qgm::Sin<float>(rotation);
+			result.m_data[4] = -qgm::Sin<float>(rotation);
+			result.m_data[5] = qgm::Cos<float>(rotation);
 			return result;
 		}
 
@@ -166,6 +192,17 @@ namespace qgm
 			camera_rotation.m_data[10] = -forward.GetZ();
 			
 			Matrix<T, 4, 4> result = camera_translation * camera_rotation;
+			return result;
+		}
+
+		static Matrix<T, 3, 3> ViewMatrix2D(const Vector2f position, const float aspect_ratio)
+		{
+			Matrix<T, 3, 3> result = Identity();
+			result.m_data[0] = 1.0f;
+			result.m_data[4] = 1.0f / aspect_ratio;
+			result.m_data[2] = -position.GetX();
+			result.m_data[5] = -position.GetY();
+			result.m_data[8] = 1.0f;
 			return result;
 		}
 

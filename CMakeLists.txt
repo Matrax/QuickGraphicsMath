@@ -1,34 +1,37 @@
 #CMake version
 cmake_minimum_required(VERSION 3.20)
 
-# Set CMake property
+# options
+option(BUILD_TESTS "Build the tests" OFF)
+
+# Set CMake properties
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# QGM variables
-set(LIB_NAME "QGM")
-set(LIB_VERSION 1.0)
+# QuickGraphicsMath variables
+set(QGM_LIB_NAME "QuickGraphicsMath")
+set(QGM_LIB_VERSION 1.0)
+set(QGM_INCLUDES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/includes")
+set(QGM_MATRIX_TESTS "${CMAKE_CURRENT_SOURCE_DIR}/tests/matrix_test.cpp")
+set(QGM_VECTOR_TESTS "${CMAKE_CURRENT_SOURCE_DIR}/tests/vector_test.cpp")
 
 # Project
-project(${LIB_NAME}  
+project(${QGM_LIB_NAME}  
         DESCRIPTION "C++17 graphics maths library"
-        VERSION ${LIB_VERSION} 
+        VERSION ${QGM_LIB_VERSION} 
         LANGUAGES CXX)
 
 # Add the interface library
-add_library(${LIB_NAME} INTERFACE)
-target_include_directories(${LIB_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/includes)
+add_library(${QGM_LIB_NAME} INTERFACE)
+target_include_directories(${QGM_LIB_NAME} INTERFACE ${QGM_INCLUDES_DIR})
 
 # Tests
-if(DEFINED QGM_COMPILE_TESTS)
-
+if(BUILD_TESTS)
         # Matrix
-        add_executable(matrix_test "tests/matrix_test.cpp")
-        target_link_libraries(matrix_test ${LIB_NAME})
-
+        add_executable(qgm_matrix_test ${QGM_MATRIX_TESTS})
+        target_link_libraries(qgm_matrix_test ${QGM_LIB_NAME})
         # Vector
-        add_executable(vector_test "tests/vector_test.cpp")
-        target_link_libraries(vector_test ${LIB_NAME})
-
+        add_executable(qgm_vector_test ${QGM_VECTOR_TESTS})
+        target_link_libraries(qgm_vector_test ${QGM_LIB_NAME})
 endif()
 
