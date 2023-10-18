@@ -6,9 +6,9 @@
 #include <stdexcept>
 
 // QGM includes
-#include "defines.hpp"
-#include "vector.hpp"
-#include "math.hpp"
+#include <qgm/math.hpp>
+#include <qgm/defines.hpp>
+#include <qgm/vector.hpp>
 
 namespace qgm
 {
@@ -209,8 +209,8 @@ namespace qgm
 		static Matrix<T, 4, 4> PerspectiveProjection(const float nearZ, const float farZ, const float field_of_view, const float aspect_ratio)
 		{
 			Matrix<T, 4, 4> result = Identity();
-			result.m_data[0] = 1.0f / (qgm::tan(field_of_view / 2.0f * qgm::RADIANS_FACTOR));
-			result.m_data[5] = 1.0f / (qgm::tan(field_of_view / 2.0f * qgm::RADIANS_FACTOR)) * aspect_ratio;
+			result.m_data[0] = 1.0f / (qgm::Tan(field_of_view / 2.0f * qgm::RADIANS_FACTOR));
+			result.m_data[5] = 1.0f / (qgm::Tan(field_of_view / 2.0f * qgm::RADIANS_FACTOR)) * aspect_ratio;
 			result.m_data[10] = -farZ / (farZ - nearZ);
 			result.m_data[11] = -2 * (farZ * nearZ) / (farZ - nearZ);
 			result.m_data[14] = -1.0f;

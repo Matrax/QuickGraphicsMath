@@ -4,7 +4,7 @@
 #include <cmath>
 
 // QGM includes
-#include "defines.hpp"
+#include <qgm/defines.hpp>
 
 //
 #undef min
@@ -40,6 +40,22 @@ namespace qgm
         if(x > max) return max;
         return x;
     }
+    
+    /**
+    * Square root method using Heron algorithm 
+    */
+    template<typename T, unsigned char precision = 8>
+    inline T FastSqrt(const T t) noexcept 
+    { 
+        double u = static_cast<double>(t);
+
+        for(unsigned char i = 0; i < precision; i++)
+        {
+            u = (u + t / u) * 0.5;
+        }
+
+        return static_cast<float>(u); 
+    }
 
     template<typename T>
     inline T LinearFunction(const T a, const T b, const T x) noexcept
@@ -62,13 +78,13 @@ namespace qgm
     template<typename T>
     inline T CircleEquation(const T center_x, const T center_y, const T radius, const T x, const T y)
     {
-        return qgm::pow(x - center_x, 2) * qgm::pow(y - center_y, 2) - qgm::pow(radius, 2);
+        return qgm::Pow<T>(x - center_x, 2) + qgm::Pow<T>(y - center_y, 2) - qgm::Pow<T>(radius, 2);
     }
 
     template<typename T>
     inline T SphereEquation(const T center_x, const T center_y, const T center_z, const T x, const T y, const T z, const T radius)
     {
-        return qgm::pow(x - center_x, 2) * qgm::pow(y - center_y, 2) * qgm::pow(z - center_z, 2) - qgm::pow(radius, 2);
+        return qgm::Pow<T>(x - center_x, 2) + qgm::Pow<T>(y - center_y, 2) + qgm::Pow<T>(z - center_z, 2) - qgm::Pow<T>(radius, 2);
     }
 
     template<typename T>

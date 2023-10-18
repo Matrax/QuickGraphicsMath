@@ -6,12 +6,13 @@
 #include <stdexcept>
 
 // QGM includes
-#include "defines.hpp"
-#include "math.hpp"
+#include <qgm/math.hpp>
+#include <qgm/defines.hpp>
 
 namespace qgm
 {
-	template<typename T, size_t size> class Vector
+	template<typename T, size_t size> 
+	class Vector
 	{
 	private:
 
@@ -65,6 +66,20 @@ namespace qgm
 			m_data[1] = y;
 			m_data[2] = z;
 			m_data[3] = w;
+		}
+
+		inline static Vector<T, size> RandomDirection()
+		{
+			Vector<T, size> result;
+
+			for (size_t i = 0; i < size; i++)
+			{
+				T random_value = static_cast<T>(std::rand());
+				T random_value_2 = static_cast<T>(std::rand());
+				result.m_data[i] = qgm::Cos<T>(random_value) + qgm::Sin<T>(random_value_2);
+			}
+
+			return result.Normalize();
 		}
 
 		std::string ToString() const
@@ -153,6 +168,36 @@ namespace qgm
 			if (size < 4)
 				throw std::runtime_error("Can't set the W coordinate !");
 
+			m_data[3] = w;
+		}
+		
+		void SetXY(T x, T y)
+		{
+			if (size < 2)
+				throw std::runtime_error("Can't set the XY coordinates !");
+
+			m_data[0] = x;
+			m_data[1] = y;
+		}
+
+		void SetXYZ(T x, T y, T z)
+		{
+			if (size < 3)
+				throw std::runtime_error("Can't set the XYZ coordinates !");
+
+			m_data[0] = x;
+			m_data[1] = y;
+			m_data[2] = z;
+		}
+
+		void SetXYZW(T x, T y, T z, T w)
+		{
+			if (size < 4)
+				throw std::runtime_error("Can't set the XYZW coordinates !");
+
+			m_data[0] = x;
+			m_data[1] = y;
+			m_data[2] = z;
 			m_data[3] = w;
 		}
 

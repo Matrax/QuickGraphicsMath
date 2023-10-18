@@ -1,12 +1,8 @@
 #CMake version
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.8)
 
 # options
 option(BUILD_TESTS "Build the tests" OFF)
-
-# Set CMake properties
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # QuickGraphicsMath variables
 set(QGM_LIB_NAME "QuickGraphicsMath")
@@ -23,15 +19,20 @@ project(${QGM_LIB_NAME}
 
 # Add the interface library
 add_library(${QGM_LIB_NAME} INTERFACE)
+
+# include directories
 target_include_directories(${QGM_LIB_NAME} INTERFACE ${QGM_INCLUDES_DIR})
 
 # Tests
 if(BUILD_TESTS)
+
         # Matrix
         add_executable(qgm_matrix_test ${QGM_MATRIX_TESTS})
         target_link_libraries(qgm_matrix_test ${QGM_LIB_NAME})
+
         # Vector
         add_executable(qgm_vector_test ${QGM_VECTOR_TESTS})
         target_link_libraries(qgm_vector_test ${QGM_LIB_NAME})
+        
 endif()
 
