@@ -24,6 +24,8 @@ namespace qgm
 
         Mesh(const unsigned long vertices_count) :
             m_positions(vertices_count * 3),
+            m_normals(vertices_count * 3),
+            m_tangentes(vertices_count * 3),
             m_uvs(vertices_count * 2),
             m_indices(vertices_count),
             m_vertices_count(vertices_count)
@@ -36,63 +38,6 @@ namespace qgm
         }
 
         virtual ~Mesh() {}
-
-        inline static Mesh CreateTriangleMesh()
-        {
-            Mesh mesh(3);
-
-            mesh.AddPosition(-0.5f, -0.5f, 0.0f);
-            mesh.AddPosition(0.5f, -0.5f, 0.0f);
-            mesh.AddPosition(0.0f, 0.5f, 0.0f);
-
-            mesh.AddNormal(0, 0, -1);
-            mesh.AddNormal(0, 0, -1);
-            mesh.AddNormal(0, 0, -1);
-
-            mesh.AddTangente(1, 0, 0);
-            mesh.AddTangente(1, 0, 0);
-            mesh.AddTangente(1, 0, 0);
-
-            mesh.AddUV(0, 0);
-            mesh.AddUV(0, 1);
-            mesh.AddUV(0.5f, 1);
-
-            return mesh;
-        }
-
-        inline static Mesh CreateQuadMesh()
-        {
-            Mesh mesh(6);
-
-            mesh.AddPosition(-0.5f, -0.5f, 0.0f);
-            mesh.AddPosition(0.5f, -0.5f, 0.0f);
-            mesh.AddPosition(-0.5f, 0.5f, 0.0f);
-            mesh.AddPosition(0.5f, 0.5f, 0.0f);
-
-            mesh.AddNormal(0, 0, 1);
-            mesh.AddNormal(0, 0, 1);
-            mesh.AddNormal(0, 0, 1);
-            mesh.AddNormal(0, 0, 1);
-
-            mesh.AddTangente(1, 0, 0);
-            mesh.AddTangente(1, 0, 0);
-            mesh.AddTangente(1, 0, 0);
-            mesh.AddTangente(1, 0, 0);
-
-            mesh.AddUV(0, 0);
-            mesh.AddUV(1, 0);
-            mesh.AddUV(0, 1);
-            mesh.AddUV(1, 1);
-
-            mesh.AddIndex(0);
-            mesh.AddIndex(1);
-            mesh.AddIndex(3);
-            mesh.AddIndex(0);
-            mesh.AddIndex(2);
-            mesh.AddIndex(3);
-
-            return mesh;
-        }
 
         void AddPosition(const float x, const float y, const float z) noexcept
         {
