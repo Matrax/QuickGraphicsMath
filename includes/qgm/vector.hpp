@@ -2,12 +2,9 @@
 
 // STD includes
 #include <string>
-#include <exception>
-#include <stdexcept>
 
 // QGM includes
 #include <qgm/math.hpp>
-#include <qgm/defines.hpp>
 
 namespace qgm
 {
@@ -40,8 +37,7 @@ namespace qgm
 
 		Vector<T, size>(T x, T y)
 		{
-			if (size < 2)
-				throw std::runtime_error("Can't instantiate with 2 parameters !");
+			static_assert(size >= 2, "Can't instantiate with less than 2 parameters !");
 
 			m_data[0] = x;
 			m_data[1] = y;
@@ -49,8 +45,7 @@ namespace qgm
 
 		Vector<T, size>(T x, T y, T z)
 		{
-			if (size < 3)
-				throw std::runtime_error("Can't instantiate with 3 parameters !");
+			static_assert(size >= 3, "Can't instantiate with  less than 3 parameters !");
 
 			m_data[0] = x;
 			m_data[1] = y;
@@ -59,8 +54,7 @@ namespace qgm
 
 		Vector<T, size>(T x, T y, T z, T w)
 		{
-			if (size < 4)
-				throw std::runtime_error("Can't instantiate with 4 parameters !");
+			static_assert(size >= 4, "Can't instantiate with  less than 4 parameters !");
 
 			m_data[0] = x;
 			m_data[1] = y;
@@ -68,18 +62,55 @@ namespace qgm
 			m_data[3] = w;
 		}
 
-		inline static Vector<T, size> RandomDirection()
+		T Distance(Vector<T, size> other)
+		{
+			double sum = 0;
+			for (size_t i = 0; i < size; i++)
+				sum += (m_data[i] - other.m_data[i]) * (m_data[i] - other.m_data[i]);
+			return static_cast<T>(std::abs(std::sqrt(sum)));
+		}
+
+		T Magnitude()
+		{
+			double magnitude = 0;
+			for (size_t i = 0; i < size; i++)
+				magnitude += m_data[i] * m_data[i];
+			return static_cast<T>(std::sqrt(magnitude));
+		}
+
+		T Dot(Vector<T, size> other)
+		{
+			double dot = 0;
+			for (size_t i = 0; i < size; i++)
+				dot += m_data[i] * other.m_data[i];
+
+			return static_cast<T>(dot);
+		}
+
+		Vector<T, size> Cross(Vector<T, size> other)
+		{
+			static_assert(size >= 3, "Can't get the cross product, it is not a Vector3 !");
+
+			Vector<T, size> result;
+			result.m_data[0] = m_data[1] * other.m_data[2] - m_data[2] * other.m_data[1];
+			result.m_data[1] = m_data[2] * other.m_data[0] - m_data[0] * other.m_data[2];
+			result.m_data[2] = m_data[0] * other.m_data[1] - m_data[1] * other.m_data[0];
+			return result;
+		}
+
+		Vector<T, size> Normalize()
 		{
 			Vector<T, size> result;
 
-			for (size_t i = 0; i < size; i++)
-			{
-				T random_value = static_cast<T>(std::rand());
-				T random_value_2 = static_cast<T>(std::rand());
-				result.m_data[i] = qgm::Cos<T>(random_value) + qgm::Sin<T>(random_value_2);
-			}
+			T magnitude = Magnitude();
+			if (magnitude == 0)
+				return result;
 
-			return result.Normalize();
+			double magnitude_inv = 1.0 / magnitude;
+			for (size_t i = 0; i < size; i++)
+				result.m_data[i] = static_cast<T>(m_data[i] * magnitude_inv);
+
+			return result;
 		}
 
 		std::string ToString() const
@@ -102,79 +133,78 @@ namespace qgm
 
 		T* GetPtr()
 		{
+			static_assert(m_data != nullptr, "Can't get the pointer because it is null !");
+
 			return m_data;
 		}
 
 		T GetX() const
 		{
+			static_assert(size >= 1, "Can't get the X coordinate !");
+
 			return m_data[0];
 		}
 
 		T GetY() const
 		{
-			if (size < 2)
-				throw std::runtime_error("Can't get the Y coordinate !");
+			static_assert(size >= 2, "Can't get the Y coordinate !");
 
 			return m_data[1];
 		}
 
 		T GetZ() const
 		{
-			if (size < 3)
-				throw std::runtime_error("Can't get the Z coordinate !");
+			static_assert(size >= 3, "Can't get the Z coordinate !");
 
 			return m_data[2];
 		}
 
 		T GetW() const
 		{
-			if (size < 4)
-				throw std::runtime_error("Can't get the W coordinate !");
+			static_assert(size >= 4, "Can't get the Z coordinate !");
 
 			return m_data[3];
 		}
 
-		T GetData(unsigned long at) const
+		T GetData(const unsigned long at) const
 		{
-			if (at >= size)
-				throw std::runtime_error("Can't get the data !");
+			if(at >= size)
+				return 0;
 
 			return m_data[at];
 		}
 
 		void SetX(T x)
 		{
+			static_assert(size >= 1, "Can't set the X coordinate !");
+
 			m_data[0] = x;
 		}
 
 		void SetY(T y)
 		{
-			if (size < 2)
-				throw std::runtime_error("Can't set the Y coordinate !");
+			static_assert(size >= 2, "Can't set the Y coordinate !");
 
 			m_data[1] = y;
 		}
 
 		void SetZ(T z)
 		{
-			if (size < 3)
-				throw std::runtime_error("Can't set the Z coordinate !");
+			static_assert(size >= 3, "Can't set the Z coordinate !");
 
 			m_data[2] = z;
 		}
 
 		void SetW(T w)
 		{
-			if (size < 4)
-				throw std::runtime_error("Can't set the W coordinate !");
+			static_assert(size >= 4, "Can't set the W coordinate !");
 
 			m_data[3] = w;
 		}
 		
 		void SetXY(T x, T y)
 		{
-			if (size < 2)
-				throw std::runtime_error("Can't set the XY coordinates !");
+			static_assert(size >= 2, "Can't set the XY coordinate !");
 
 			m_data[0] = x;
 			m_data[1] = y;
@@ -182,8 +212,7 @@ namespace qgm
 
 		void SetXYZ(T x, T y, T z)
 		{
-			if (size < 3)
-				throw std::runtime_error("Can't set the XYZ coordinates !");
+			static_assert(size >= 3, "Can't set the XYZ coordinate !");
 
 			m_data[0] = x;
 			m_data[1] = y;
@@ -192,8 +221,7 @@ namespace qgm
 
 		void SetXYZW(T x, T y, T z, T w)
 		{
-			if (size < 4)
-				throw std::runtime_error("Can't set the XYZW coordinates !");
+			static_assert(size >= 4, "Can't set the XYZW coordinate !");
 
 			m_data[0] = x;
 			m_data[1] = y;
@@ -203,64 +231,9 @@ namespace qgm
 
 		void SetData(unsigned long at, T value)
 		{
-			if (at >= size)
-				throw std::runtime_error("Can't set the data !");
+			static_assert(at >= size, "Can't set the coordinate !");
 
 			m_data[at] = value;
-		}
-
-		T Distance(Vector<T, size> other)
-		{
-			double sum = 0;
-			for (size_t i = 0; i < size; i++)
-				sum += (m_data[i] - other.m_data[i]) * (m_data[i] - other.m_data[i]);
-
-			return static_cast<T>(std::abs(std::sqrt(sum)));
-		}
-
-		T Magnitude()
-		{
-			double magnitude = 0;
-			for (size_t i = 0; i < size; i++)
-				magnitude += m_data[i] * m_data[i];
-
-			return static_cast<T>(std::sqrt(magnitude));
-		}
-
-		T Dot(Vector<T, size> other)
-		{
-			double dot = 0;
-			for (size_t i = 0; i < size; i++)
-				dot += m_data[i] * other.m_data[i];
-
-			return static_cast<T>(dot);
-		}
-
-		Vector<T, size> Cross(Vector<T, size> other)
-		{
-			if (size < 3)
-				throw std::runtime_error("Can't get the cross product !");
-
-			Vector<T, size> result;
-			result.m_data[0] = m_data[1] * other.m_data[2] - m_data[2] * other.m_data[1];
-			result.m_data[1] = m_data[2] * other.m_data[0] - m_data[0] * other.m_data[2];
-			result.m_data[2] = m_data[0] * other.m_data[1] - m_data[1] * other.m_data[0];
-			return result;
-		}
-
-		Vector<T, size> Normalize()
-		{
-			Vector<T, size> result;
-
-			T magnitude = Magnitude();
-			if (magnitude == 0)
-				return result;
-
-			double magnitude_inv = 1.0 / magnitude;
-			for (size_t i = 0; i < size; i++)
-				result.m_data[i] = static_cast<T>(m_data[i] * magnitude_inv);
-
-			return result;
 		}
 
 		Vector<T, size> operator+(Vector<T, size> other)
@@ -313,10 +286,22 @@ namespace qgm
 	};
 
 	// Usings
+	using Vector2d = Vector<double, 2>;
+	using Vector3d = Vector<double, 3>;
+	using Vector4d = Vector<double, 4>;
 	using Vector2f = Vector<float, 2>;
 	using Vector3f = Vector<float, 3>;
 	using Vector4f = Vector<float, 4>;
 	using Vector2i = Vector<int, 2>;
 	using Vector3i = Vector<int, 3>;
 	using Vector4i = Vector<int, 4>;
+	using Vector2ui = Vector<unsigned int, 2>;
+	using Vector3ui = Vector<unsigned int, 3>;
+	using Vector4ui = Vector<unsigned int, 4>;
+	using Vector2l = Vector<long, 2>;
+	using Vector3l = Vector<long, 3>;
+	using Vector4l = Vector<long, 4>;
+	using Vector2ul = Vector<unsigned long, 2>;
+	using Vector3ul = Vector<unsigned long, 3>;
+	using Vector4ul = Vector<unsigned long, 4>;
 }

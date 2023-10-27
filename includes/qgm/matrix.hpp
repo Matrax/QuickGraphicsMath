@@ -1,21 +1,17 @@
 #pragma once
 
 // STD includes
+#include <cstddef>
 #include <string>
-#include <exception>
-#include <stdexcept>
 
 // QGM includes
 #include <qgm/math.hpp>
-#include <qgm/defines.hpp>
 #include <qgm/vector.hpp>
 
 namespace qgm
 {
 	/*
 	* This class allow to create a matrix of n * m size with any primitive type, in row-major order.
-	* So if you want to use this class with OpenGl, you need to transpose the matrix before sending it.
-	*
 	* Here is an example with a 4x4 matrix.
 	* Row-major order (number = index)
 	* [0,  1,  2,  3 ]
@@ -238,23 +234,25 @@ namespace qgm
 
 		T * GetPtr()
 		{
+			static_assert(m_data != nullptr, "Can't get the pointer because it is null !");
+
 			return m_data;
 		}
 
-		T GetData(unsigned long at) const
+		T GetData(size_t at) const
 		{
-			if (at >= n * m)
-				throw std::runtime_error("Can't get the data !");
+			if(at >= n * m)
+				return 0;
 
 			return m_data[at];
 		}
 
-		void SetData(const size_t at, T value)
+		bool SetData(const size_t at, T value)
 		{
 			if (at >= n * m)
-				throw std::runtime_error("Can't set the data !");
-
+				return false;
 			m_data[at] = value;
+			return true;
 		}
 
 		Matrix<T, n, m> operator+(Matrix<T, n, m> other)
@@ -330,10 +328,22 @@ namespace qgm
 	};
 
 	// Usings
+	using Matrix2d = Matrix<double, 2, 2>;
+	using Matrix3d = Matrix<double, 3, 3>;
+	using Matrix4d = Matrix<double, 4, 4>;
 	using Matrix2f = Matrix<float, 2, 2>;
 	using Matrix3f = Matrix<float, 3, 3>;
 	using Matrix4f = Matrix<float, 4, 4>;
 	using Matrix2i = Matrix<int, 2, 2>;
 	using Matrix3i = Matrix<int, 3, 3>;
 	using Matrix4i = Matrix<int, 4, 4>;
+	using Matrix2ui = Matrix<unsigned int, 2, 2>;
+	using Matrix3ui = Matrix<unsigned int, 3, 3>;
+	using Matrix4ui = Matrix<unsigned int, 4, 4>;
+	using Matrix2l = Matrix<long, 2, 2>;
+	using Matrix3l = Matrix<long, 3, 3>;
+	using Matrix4l = Matrix<long, 4, 4>;
+	using Matrix2ul = Matrix<unsigned long, 2, 2>;
+	using Matrix3ul = Matrix<unsigned long, 3, 3>;
+	using Matrix4ul = Matrix<unsigned long, 4, 4>;
 }

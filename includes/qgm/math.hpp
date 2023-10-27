@@ -4,11 +4,7 @@
 #include <cmath>
 
 // QGM includes
-#include <qgm/defines.hpp>
-
-//
-#undef min
-#undef max
+#include <qgm/constants.hpp>
 
 namespace qgm
 {
@@ -70,39 +66,69 @@ namespace qgm
     }
 
     template<typename T>
-    inline T BilinearInterpolation(const T bottom_left, const T bottom_right, const T top_left, const T top_right, const T x, const T y)
+    inline T BilinearInterpolation(const T bottom_left, const T bottom_right, const T top_left, const T top_right, const T x, const T y) noexcept
     {
         return bottom_left * x * y + bottom_right * (1 - x) * y + top_left * x * (1 - y) + top_right * (1 - x) * (1 - y);
     }
 
     template<typename T>
-    inline T CircleEquation(const T center_x, const T center_y, const T radius, const T x, const T y)
+    inline T CircleEquation(const T center_x, const T center_y, const T radius, const T x, const T y) noexcept
     {
         return qgm::Pow<T>(x - center_x, 2) + qgm::Pow<T>(y - center_y, 2) - qgm::Pow<T>(radius, 2);
     }
 
     template<typename T>
-    inline T SphereEquation(const T center_x, const T center_y, const T center_z, const T x, const T y, const T z, const T radius)
+    inline T SphereEquation(const T center_x, const T center_y, const T center_z, const T x, const T y, const T z, const T radius) noexcept
     {
         return qgm::Pow<T>(x - center_x, 2) + qgm::Pow<T>(y - center_y, 2) + qgm::Pow<T>(z - center_z, 2) - qgm::Pow<T>(radius, 2);
     }
 
     template<typename T>
-    inline T Cos(const T t) noexcept { return std::cos(t); }
+    inline T FastCos(const T t) noexcept
+    {
+        return 1 - qgm::Pow<T>(t, 2) / 2.0f + qgm::Pow<T>(t, 4) / 24.0f;
+    }
+
+    template<typename T>
+    inline T FastSin(const T t) noexcept
+    {
+        return  t - qgm::Pow<T>(t, 3) / 6.0f + qgm::Pow<T>(t, 5) / 120.0f;
+    }
+
+    template<typename T>
+    inline T Cos(const T t) noexcept
+    {
+        return std::cos(t);
+    }
     
     template<typename T>
-    inline T Sin(const T t) noexcept { return std::sin(t); }
+    inline T Sin(const T t) noexcept
+    {
+        return std::sin(t);
+    }
 
     template<typename T>
-    inline T Tan(const T t) noexcept { return std::tan(t); }
+    inline T Tan(const T t) noexcept
+    {
+        return std::tan(t);
+    }
 
     template<typename T>
-    inline T ACos(const T t) noexcept { return std::acos(t); }
+    inline T ACos(const T t) noexcept
+    {
+        return std::acos(t);
+    }
 
     template<typename T>
-    inline T ASin(const T t) noexcept { return std::asin(t); }
+    inline T ASin(const T t) noexcept
+    {
+        return std::asin(t);
+    }
 
     template<typename T>
-    inline T ATan(const T t) noexcept { return std::atan(t); }
+    inline T ATan(const T t) noexcept
+    {
+        return std::atan(t);
+    }
     
 }

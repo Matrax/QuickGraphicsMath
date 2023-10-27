@@ -2,7 +2,6 @@
 
 // QGM includes
 #include <qgm/math.hpp>
-#include <qgm/defines.hpp>
 #include <qgm/vector.hpp>
 
 namespace qgm

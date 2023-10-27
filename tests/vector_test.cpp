@@ -3,7 +3,6 @@
 
 // QGM includes
 #include <qgm/vector.hpp>
-#include <qgm/math.hpp>
 
 int main()
 {

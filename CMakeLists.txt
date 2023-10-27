@@ -6,7 +6,7 @@ option(BUILD_TESTS "Build the tests" OFF)
 
 # Project
 project(QuickGraphicsMath
-        DESCRIPTION "C++17 graphics maths library"
+        DESCRIPTION "C++17 graphics math library"
         VERSION 1.0
         LANGUAGES CXX)
 
@@ -34,7 +34,6 @@ if(BUILD_TESTS)
         # Random
         add_executable(qgm_random_test "${CMAKE_CURRENT_SOURCE_DIR}/tests/random_test.cpp")
         target_link_libraries(qgm_random_test QuickGraphicsMath)
-
 
 endif()
 
