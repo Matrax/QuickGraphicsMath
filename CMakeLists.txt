@@ -35,5 +35,9 @@ if(BUILD_TESTS)
         add_executable(qgm_random_test "${CMAKE_CURRENT_SOURCE_DIR}/tests/random_test.cpp")
         target_link_libraries(qgm_random_test QuickGraphicsMath)
 
+        # Mesh
+        add_executable(qgm_mesh_test "${CMAKE_CURRENT_SOURCE_DIR}/tests/mesh_test.cpp")
+        target_link_libraries(qgm_mesh_test QuickGraphicsMath)
+
 endif()
 

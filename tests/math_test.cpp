@@ -6,7 +6,6 @@
 
 int main()
 {
-    
     std::cout << "LinearInterpolation<float>(0.7, 0.8, 0.5): " << qgm::LinearInterpolation<float>(0.7, 0.8, 0.5) << std::endl;
     std::cout << "BilinearInterpolation<float>(0.7, 0.8, 0.7, 0.8, 0.5, 0.5): " << qgm::BilinearInterpolation<float>(0.7, 0.8, 0.7, 0.8, 0.5, 0.5) << std::endl;
     std::cout << "FastSqrt<float>(27): " << qgm::FastSqrt<float>(27) << std::endl;

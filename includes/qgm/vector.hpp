@@ -62,7 +62,7 @@ namespace qgm
 			m_data[3] = w;
 		}
 
-		T Distance(Vector<T, size> other)
+		T Distance(Vector<T, size> & other)
 		{
 			double sum = 0;
 			for (size_t i = 0; i < size; i++)
@@ -78,7 +78,7 @@ namespace qgm
 			return static_cast<T>(std::sqrt(magnitude));
 		}
 
-		T Dot(Vector<T, size> other)
+		T Dot(Vector<T, size> & other)
 		{
 			double dot = 0;
 			for (size_t i = 0; i < size; i++)
@@ -87,7 +87,7 @@ namespace qgm
 			return static_cast<T>(dot);
 		}
 
-		Vector<T, size> Cross(Vector<T, size> other)
+		Vector<T, size> Cross(Vector<T, size> & other)
 		{
 			static_assert(size >= 3, "Can't get the cross product, it is not a Vector3 !");
 

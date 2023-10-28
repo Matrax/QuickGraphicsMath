@@ -188,6 +188,7 @@ namespace qgm
 			camera_rotation.m_data[10] = -forward.GetZ();
 			
 			Matrix<T, 4, 4> result = camera_translation * camera_rotation;
+			
 			return result;
 		}
 
